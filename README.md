@@ -56,13 +56,20 @@ on Hugging Face's side, and this page says so explicitly, linking out to
 [huggingface.co/models](https://huggingface.co/models) for the real-time figure rather
 than competing with it.
 
-On top of the build-time snapshot, `/api/stats` (a Vercel serverless function) re-scrapes
-the live count from `huggingface.co/models` on demand, cached at Vercel's edge for one
-week (`s-maxage=604800`) with `stale-while-revalidate`. A Vercel Cron Job defined in
-[`vercel.json`](./vercel.json) hits that same endpoint every Monday, forcing the edge
-cache to revalidate — so the figure shown to visitors refreshes weekly without needing
-a database. If the live scrape ever fails, the endpoint falls back to the last known-good
-build-time figure, clearly marked as a fallback in the response.
+On top of the build-time snapshot, `/api/stats` (a Vercel serverless function) attempts
+to re-scrape the live count from `huggingface.co/models` on demand, cached at Vercel's
+edge for one week (`s-maxage=604800`) with `stale-while-revalidate`. A Vercel Cron Job
+defined in [`vercel.json`](./vercel.json) hits that same endpoint every Monday, forcing
+the edge cache to revalidate.
+
+In practice, Hugging Face's Cloudflare bot protection appears to block the scrape from
+Vercel's serverless IP ranges (it works fine from a normal machine, as used during this
+build). Rather than mask that, the endpoint fails honestly: it falls back to the last
+known-good build-time figure, clearly marked `"source": "build-time fallback"` with the
+underlying error, and the page itself says "Live refetch unavailable right now — showing
+the last verified snapshot" instead of pretending the number is current. This is the
+intended behavior, not a bug to silently hide — a wrong "live" number would be worse
+than an honest snapshot.
 
 ## Tech stack
 
@@ -92,7 +99,7 @@ is picked up automatically from `vercel.json` once the project is linked on Verc
 
 ## Live site
 
-_Add the deployed Vercel URL here once live._
+https://oss-enterprise-readiness.vercel.app
 
 ## Contact
 
