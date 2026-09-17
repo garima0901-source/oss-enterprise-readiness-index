@@ -19,8 +19,14 @@ const FALLBACK = {
 export default async function handler(req, res) {
   try {
     const resp = await fetch('https://huggingface.co/models', {
-      headers: { 'User-Agent': 'Mozilla/5.0 (oss-enterprise-readiness-index stats refresher)' },
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
     })
+    if (!resp.ok) throw new Error(`upstream responded ${resp.status}`)
     const html = await resp.text()
     const match = html.match(/"numTotalItems":(\d+)/)
 
