@@ -3,7 +3,6 @@ import HubGrowthChart from './components/HubGrowthChart'
 import RoboticsShift from './components/RoboticsShift'
 import EnterpriseFeatures from './components/EnterpriseFeatures'
 import SelfCheck from './components/SelfCheck'
-import Closing from './components/Closing'
 import Footer from './components/Footer'
 
 const GITHUB_URL = 'https://github.com/garima0901-source/oss-enterprise-readiness-index'
@@ -19,7 +18,6 @@ export default function App() {
         <EnterpriseFeatures />
         <SelfCheck />
       </main>
-      <Closing />
       <Footer githubUrl={GITHUB_URL} linkedinUrl={LINKEDIN_URL} />
     </div>
   )
